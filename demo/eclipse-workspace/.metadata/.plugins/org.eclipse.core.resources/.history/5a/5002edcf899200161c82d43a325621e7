@@ -1,0 +1,25 @@
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/test
+jdbc.query.select = select * from role
+# TO GI INPUT AT THE RUNIME
+jdbc.username=
+jdbc.password=
+jdbc.insertQuery=insert into role values (?,?,?)
+jdbc.insertQuery2=insert into department values (?,?,?)
+jdbc.insertQuery3=insert into project values (?,?,?,?)
+jdbc.query.insertEmployee=insert into employee values(?,?,?,?,?,?,?,?,?,?,?)
+jdbc.query.modifyEmployee=delete from employee where empId=?
+jdbc.query.removeEmployee=delete from employee where ?=? 
+jdbc.query.removeEmployeeKin=delete from employee where kinId=? 
+jdbc.query.removeEmployeeEmail=delete from employee where emailId=? 
+jdbc.query.removeEmployeeName=delete from employee where name=? 
+jdbc.query.SAD=select * from department
+jdbc.query.SAP=select * from project where deptId=?
+jdbc.query.SAR=select * from role
+jdbc.query.SD=select * from department where deptId=?
+jdbc.query.SP=select * from project where projId=?
+jdbc.query.SR=select * from role where roleId=?
+jdbc.query.SE=select   * from employee where emailId=?
+jdbc.query.SAE=select  * from employee
+
+# jdbc.query.insert = insert into person values     (?,?,?)

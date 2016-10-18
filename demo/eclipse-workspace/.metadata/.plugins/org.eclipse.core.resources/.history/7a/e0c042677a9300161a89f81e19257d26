@@ -1,0 +1,30 @@
+package com.flp.ems.controller;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+@RequestMapping(value = "/addController")
+public class addController {
+
+	
+	 @RequestMapping(method = RequestMethod.GET)
+	    public String viewRegistration(Map<String, Object> model) {
+		 {
+			 
+		 
+			 
+			 
+			 return null;
+		 }
+		 
+		 
+	 
+	 
+	 
+	 
+	
+}

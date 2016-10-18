@@ -1,0 +1,5 @@
+127.0.0.1 - - [17/Oct/2016:18:02:13 +0530] "GET / HTTP/1.1" 404 994
+127.0.0.1 - - [17/Oct/2016:18:02:17 +0530] "GET /sample/HelloWorld?wsdl HTTP/1.1" 200 2258
+127.0.0.1 - - [17/Oct/2016:18:02:17 +0530] "GET /sample/HelloWorld?wsdl HTTP/1.1" 200 2258
+127.0.0.1 - - [17/Oct/2016:18:03:05 +0530] "POST /sample/HelloWorld HTTP/1.1" 200 209
+127.0.0.1 - - [17/Oct/2016:18:05:20 +0530] "POST /sample/HelloWorld HTTP/1.1" 200 209

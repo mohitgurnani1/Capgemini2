@@ -1,0 +1,2 @@
+package tp;
+interface I {String s1 = "I";}

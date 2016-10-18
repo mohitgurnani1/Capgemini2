@@ -1,0 +1,40 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+
+class Bank{
+	public int no;
+	public String name;
+}
+
+
+public class Entry {
+
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		
+		
+		//SERIALIZING AN OBJECT INTO A STREAM
+		
+		try(ObjectOutputStream out=new ObjectOutputStream(new FileOutputStream("test.ser"));){
+			
+			Bank bankRef=new Bank();
+			bankRef.name="mohit";
+			bankRef.no=5;
+			
+			
+			out.writeObject(bankRef);
+			
+			
+			
+			
+			
+			
+		}
+		
+		
+	}
+	
+	
+}

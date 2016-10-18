@@ -1,0 +1,217 @@
+package com.flp.ems.service;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+//import com.flp.ems.dao.EmployeeDaoImplForDB;
+import com.flp.ems.dao.EmployeeDaoImplForDBUsingJDBCTemplate;
+import com.flp.ems.domain.Department;
+import com.flp.ems.domain.Employee;
+import com.flp.ems.domain.Project;
+import com.flp.ems.domain.Role;
+
+
+@Repository
+public class EmployeeServiceImpl implements IEmployeeService {
+
+	
+	@Autowired
+	private EmployeeDaoImplForDBUsingJDBCTemplate dao;
+	
+	
+	@Override
+	public boolean AddEmployee(HashMap<String,String> emp)  {
+		// TODO Auto-generated method stub
+		Date dob=null,doj=null;
+		SimpleDateFormat d=new SimpleDateFormat("yyyy-MM-dd");
+		
+		String name=(String) emp.get("name");
+		String phone=(String) emp.get("phoneNo");
+		String address=(String) emp.get("address");
+			try{	
+		 dob=d.parse((String) emp.get("dob"));
+		 doj=d.parse((String) emp.get("doj"));
+			}
+		catch(Exception e){
+			System.out.println("Date is not in proper format. Kindly Enter date in yyyy-mm-dd format");
+			return false;
+		}
+		
+		String deptId=(String) emp.get("dept");
+		String projId=(String) emp.get("project");
+		String roleId=(String) emp.get("role");
+		String empId=generateEmployeeId();
+		String emailId=generateEmailId(name);
+		String kinId=generateKinId(phone);
+		
+		//Department depNew=dao.getDeptById(deptId);
+		//Project projNew=dao.getProjectById(projId);
+		//Role roleNew=dao.getRoleById(roleId);	
+	
+		Employee employee=new Employee(empId, name, kinId, emailId, phone, address, dob, doj, deptId, projId, roleId);
+		dao.AddEmployee(employee);
+		return true;
+	}
+
+	private String generateEmailId(String name) {
+	Random r=new Random();
+		return name.replaceAll("\\s+","") +r.nextInt(1000)+"@barclays.com";
+	}
+
+	private String generateKinId(String phone) {
+		Random r=new Random();
+		return "ES"+phone+r.nextInt(100);
+	}
+
+	private String generateEmployeeId() {
+		Random r=new Random();
+		return "G0"+r.nextInt(10000000);
+	}
+
+	public HashMap<String,String> getEmployeeByEmailId(String emailId){
+		Employee e=dao.getEmployeeByEmailId(emailId);
+		HashMap<String,String> h=new HashMap();
+		h.put("emailId", e.getEmailId());
+		h.put("name", e.getName());
+		h.put("address", e.getAddress());
+		h.put("phoneNo", e.getPhoneNo());
+		return h;
+	}
+	
+	
+	@Override
+	    public boolean ModifyEmployee(HashMap emp) {
+		Employee e=dao.getEmployeeByEmailId((String)emp.get("emailId"));
+		for(Object o:emp.entrySet())
+		{
+			Map.Entry<String, String> m=(Map.Entry<String, String>)o;
+			switch(m.getKey()){
+			
+			case "name":
+				e.setName(m.getValue());
+				break;
+			case "phoneNo":
+				e.setPhoneNo(m.getValue());
+				break;
+			case "address":
+				e.setAddress(m.getValue());
+				break;
+			default:
+				break;
+			}
+		}
+
+
+		return dao.ModifyEmployee(e);	
+		}
+
+	@Override
+	public boolean RemoveEmployee(String key, String value) {
+		switch(key){
+		case "kinId":
+			return	dao.RemoveEmployeeByKinId(value);		
+		case "name":
+			return	dao.RemoveEmployeeByName(value);	
+		case "emailId":
+			return	dao.RemoveEmployeeByEmailId(value);	
+			default:
+				return	dao.RemoveEmployeeByEmailId(value);	
+		}
+		
+	
+	}
+
+	@Override
+	public HashMap<String,String> SearchEmployee(HashMap<String, String> emp) {
+		Employee e=dao.SearchEmployee(emp);
+		if(e==null)
+			return null;
+		
+		 HashMap<String,String>hm=new HashMap();
+		
+					hm.put("name",e.getName());
+					hm.put("kinId",e.getKinId());
+					hm.put("emailId",e.getEmailId());
+					hm.put("role",dao.getRoleById(e.getRoleid()).getName());
+					hm.put("project",dao.getProjectById(e.getProjid()).getName());
+					hm.put("dept",dao.getDeptById(e.getDepid()).getName());
+		
+			return hm;
+
+	}
+
+	@Override
+	public HashMap[] getAllEmployee() {
+		ArrayList<Employee> e= dao.getAllEmployee();
+		if(e==null)
+			return null;
+	 HashMap<String,String>hm[]=new HashMap[e.size()];
+	 int i=0;
+	 for(Employee emp:e){
+		 	hm[i]=new HashMap();
+			hm[i].put("name",emp.getName());
+			hm[i].put("kinId",emp.getKinId());
+			hm[i].put("emailId",emp.getEmailId());
+			hm[i].put("role",dao.getRoleById(emp.getRoleid()).getName());
+			hm[i].put("project",dao.getProjectById(emp.getProjid()).getName());
+			hm[i].put("dept",dao.getDeptById(emp.getDepid()).getName());
+			//System.out.println(emp.getDob());
+	i++;
+	 }
+	return hm;
+	}
+
+	public  HashMap<String, String> getRolesList() {
+		HashMap<String,String> roles=new HashMap();
+		ArrayList<Role> rol=dao.getRoleList();
+		if(rol==null)
+			return null;
+		
+		for(Role i : rol){
+			roles.put(i.getRoleId(), i.getName());
+		}
+		
+		
+		return roles;
+	}
+
+	public  HashMap<String, String> getDepartmentList() {
+		HashMap<String,String> dept=new HashMap<String, String>();
+		
+		ArrayList<Department> dep=dao.getDepartmentList();
+		if(dep==null)
+			return null;
+		
+		for(Department i :dep){
+			dept.put(i.getDeptId(), i.getName());
+		}
+		
+		return dept;
+	}
+	
+	public  HashMap<String, String> getProjectList(String dept) {
+		
+		HashMap<String,String> project=new HashMap();
+		ArrayList<Project> proj=dao.getProjectList(dept);
+		
+		if(proj==null)
+			return null;
+		
+		for(Project i :proj){
+			project.put(i.getProjId(), i.getName());
+		}
+		
+		return project;
+		
+		
+	}
+	
+
+}

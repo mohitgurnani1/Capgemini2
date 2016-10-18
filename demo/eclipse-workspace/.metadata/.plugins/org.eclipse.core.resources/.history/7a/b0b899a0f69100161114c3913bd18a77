@@ -1,0 +1,115 @@
+package com.cg;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+//todos complete
+//TODO 1 Import appropriate classes based on following TODOs
+//Follow TODOs (if available)
+/**
+ * 
+ * This is a JDBCCarDAO class
+ * 
+ * @see java.lang.Object
+ * @author Abhishek
+ * 
+ *
+ */
+
+// TODO 2 Implement appropriate Interface
+
+public class daoImpl implements Idao {
+	// TODO 3 Declare a local variable datasource of type DataSource follow
+	// encapsulation principle
+	DataSource datasource = null;
+
+	public daoImpl(DataSource ds) {
+		datasource=ds;
+		}
+	
+	public void setDatasource(DataSource datasource) {
+		this.datasource = datasource;
+	}
+
+		public void create(UserDTO user) {
+		Connection connection = null;
+
+		String insertQuery = "insert into userDTO values(?,?,?,?,?)";
+		try {
+			try {
+				// TODO 6
+				// Get a connection using datasource
+				connection = datasource.getConnection();
+				// Start the JDBC transaction
+				connection.setAutoCommit(false);
+				// Create a PreparedStatement using insertQuery
+				PreparedStatement insert = connection.prepareStatement(insertQuery);
+				// Set the parameters of the PreparedStatement
+				insert.setString(1, user.getUsername());
+				insert.setString(2, user.getPassword());
+				insert.setString(3, user.getEmail());
+				insert.setDate(4, new java.sql.Date(user.getBirthDate().getTime()));
+				insert.setString(5, user.getProfession());
+				// Invoke appropriate API of JDBC to update and commit the
+				// record
+				insert.execute();
+				connection.commit();
+			} catch (SQLException e) {
+				// e.printStackTrace();
+				if (connection != null)
+					connection.rollback();
+				throw e;
+			} finally {
+				if (connection != null)
+					connection.close();
+			}
+		} catch (SQLException e) {
+		e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	/**
+	 * This method is mapped to DELETE_CAR_ACTION
+	 * 
+	 * @param ids
+	 *            collection of CAR ids.
+	 */
+	public void delete(String username) {
+		Connection connection = null;
+		String deleteQuery = "delete from userDTO where username=?";
+
+		try {
+			try {
+				// TODO 7
+				connection = datasource.getConnection();
+				connection.setAutoCommit(false);
+				PreparedStatement deleteStat = connection.prepareStatement(deleteQuery);
+					deleteStat.setString(1, username);
+					deleteStat.execute();
+				connection.commit();
+
+			} catch (SQLException e) {
+				if (connection != null)
+					connection.rollback();
+
+				throw e;
+			} finally {
+				if (connection != null)
+					connection.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}

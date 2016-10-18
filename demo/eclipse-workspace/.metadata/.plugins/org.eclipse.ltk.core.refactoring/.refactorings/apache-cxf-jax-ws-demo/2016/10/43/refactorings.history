@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 2 elements to &apos;apache-cxf-jax-ws-demo-client/src/main/resources&apos;&#x0D;&#x0A;- Original project: &apos;apache-cxf-jax-ws-demo&apos;&#x0D;&#x0A;- Destination element: &apos;apache-cxf-jax-ws-demo-client/src/main/resources&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     wsdl&#x0D;&#x0A;     xsd" description="Copy folders" destination="=apache-cxf-jax-ws-demo-client/src\/main\/resources" element1="src/main/resources/wsdl" element2="src/main/resources/xsd" files="0" flags="589830" folders="2" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1476778984090" units="0" version="1.0"/>
+</session>

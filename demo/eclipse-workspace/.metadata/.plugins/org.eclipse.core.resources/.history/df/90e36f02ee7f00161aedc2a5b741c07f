@@ -1,0 +1,17 @@
+package tp;
+class A implements I {String s1 = "A";
+public int r=1;
+
+
+
+public void run(){
+	System.out.println("A");
+}
+
+
+
+}
+
+
+
+

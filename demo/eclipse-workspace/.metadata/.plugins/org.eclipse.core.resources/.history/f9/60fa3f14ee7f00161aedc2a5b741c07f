@@ -1,0 +1,17 @@
+package tp;
+class B extends A {String s1 = "B";
+public int r=2;
+
+
+
+
+
+public void run(){
+	System.out.println("B");
+}
+
+
+
+
+
+}

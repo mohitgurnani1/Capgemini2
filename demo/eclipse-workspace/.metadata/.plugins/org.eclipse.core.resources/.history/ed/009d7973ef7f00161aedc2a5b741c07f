@@ -1,0 +1,22 @@
+package tp;
+class B extends A {String s1 = "B";
+public int r=2;
+static int a=5;
+
+static int get(){
+	return 5;
+}
+public B(int b){
+	super(get());
+}
+
+
+public void run(){
+	System.out.println("B");
+}
+
+
+
+
+
+}

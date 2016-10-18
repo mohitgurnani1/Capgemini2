@@ -1,0 +1,26 @@
+package tp;
+class A implements I {
+	
+String s1 = "A";
+
+
+
+public A(){
+	
+}
+
+public A(int a,in
+	this();
+	
+}
+
+
+
+
+
+
+
+
+
+
+}

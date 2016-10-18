@@ -1,0 +1,6 @@
+package tp;
+class A implements I {String s1 = "A";}
+
+
+
+

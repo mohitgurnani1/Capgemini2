@@ -1,0 +1,91 @@
+package com.flp.ems.view;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.util.WebUtils;
+
+import com.flp.ems.service.EmployeeServiceImpl;
+
+/**
+ * Servlet implementation class addServlet
+ */
+@WebServlet("/addServlet")
+public class addServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    /**
+     * Default constructor. 
+     */
+    public addServlet() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	
+		HashMap<String, String> emp=new HashMap<String,String>();
+		
+		WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+		EmployeeServiceImpl e=applicationContext.getBean("service",EmployeeServiceImpl.class);
+		emp.put("name", request.getParameter("name"));
+		emp.put("phoneNo", request.getParameter("phoneNo"));
+		emp.put("address",  request.getParameter("address"));
+		
+		 String dob=request.getParameter("dob");
+		System.out.println(dob);
+		 //String dobSplit[]=dob.split("/");
+		 //dob=dobSplit[2]+"-"+dobSplit[0]+"-"+dobSplit[1];
+		//System.out.println(dob);
+		 emp.put("dob", dob);
+		
+		 
+		 String doj=request.getParameter("doj");
+		//	String dojSplit[]=doj.split("/");
+			// doj=dojSplit[2]+"-"+dojSplit[0]+"-"+dojSplit[1];
+			System.out.println(doj);
+			 emp.put("doj", doj);
+		
+			 emp.put("dept", request.getParameter("dept"));
+			 emp.put("project", request.getParameter("project"));
+			 emp.put("role",request.getParameter("role"));
+				
+			 
+			 PrintWriter out=response.getWriter();
+				
+	
+		if(e.AddEmployee(emp))
+			out.write("<br><br><h3><font color='red'>Employee added successfully</font></h3>");
+		else
+			out.write("<br><br><h3><font color='red'>Employee couldnt be added</font></h3>");
+		
+		RequestDispatcher rd=request.getRequestDispatcher("add.jsp");
+		rd.include(request,response);
+	
+	
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

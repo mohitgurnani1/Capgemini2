@@ -1,0 +1,14 @@
+package tp;
+class C extends B {
+	  String s1 = "C";
+	  void printIt() {
+	    System.out.print(((A)this).s1 + ((B)this).s1 +
+	                     ((C)this).s1 + ((I)this).s1);
+	  }
+	  
+	  public void run(){
+			System.out.println("C");
+		}
+
+	  public static void main (String[] args) {new C().printIt();}
+	}

@@ -1,0 +1,62 @@
+class Table{  
+  
+synchronized  static void printTable(int n){  
+   for(int i=1;i<=10;i++){  
+     System.out.println(n*i);  
+     try{  
+       Thread.sleep(400);  
+     }catch(Exception e){}  
+   }  
+ }  
+}  
+  
+class MyThread1 extends Thread{  
+public void run(){  
+Table t1=new Table();
+t1.printTable(1);  
+}  
+}  
+  
+class MyThread2 extends Thread{  
+public void run(){  
+	Table t2=new Table();
+t2.printTable(10);  
+
+}  
+}  
+  
+class MyThread3 extends Thread{  
+private Integer number=0;
+	public void run(){  
+	for(int i=1;i<10000;i++)
+	{	
+		number++;
+	
+	}
+
+}
+	public Integer getNumber(){return number;}
+	
+}  
+  
+  
+  
+  
+class MyThread4 extends Thread{  
+public void run(){  
+	Table t4= new Table();
+	t4.printTable(1000);  
+}  
+}  
+  
+public class TestSynchronization4{  
+public static void main(String t[]){  
+MyThread3 t1=new MyThread3();
+t1.start();
+synchronized(t1){
+System.out.println(t1.getNumber());
+}
+
+
+}  
+}

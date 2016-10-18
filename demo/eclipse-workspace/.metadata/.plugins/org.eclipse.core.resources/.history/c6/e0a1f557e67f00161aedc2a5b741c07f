@@ -1,0 +1,3 @@
+package tp;
+
+class C extends B {void m1() {System.out.print("C");}}

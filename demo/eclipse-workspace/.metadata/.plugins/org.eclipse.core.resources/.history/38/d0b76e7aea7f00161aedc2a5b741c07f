@@ -1,0 +1,3 @@
+package tp;
+
+interface I {public static String s1 = "I";}

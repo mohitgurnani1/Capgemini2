@@ -1,0 +1,2 @@
+package tp;
+class B extends A {String s1 = "B";}

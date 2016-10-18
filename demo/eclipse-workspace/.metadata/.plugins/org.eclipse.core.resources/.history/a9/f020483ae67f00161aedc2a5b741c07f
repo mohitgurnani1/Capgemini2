@@ -1,0 +1,2 @@
+package tp;
+class A {void m1() {System.out.print("A");}}

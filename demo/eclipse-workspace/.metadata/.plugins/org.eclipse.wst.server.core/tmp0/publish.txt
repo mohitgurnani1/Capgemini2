@@ -1,0 +1,9 @@
+#Tomcat publish data
+<<<<<<< HEAD
+#Tue Oct 18 15:13:06 IST 2016
+org.eclipse.jst.jee.server\:/binary\:D\:\\git\\Capgemini\\demo\\eclipse-workspace\\Dependencies\\lib\\spring-web-3.2.9.RELEASE.jar=WEB-INF/lib/spring-web-3.2.9.RELEASE.jar
+=======
+#Sun Oct 16 14:06:09 IST 2016
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\Mohit\\Documents\\GitHub\\Capgemini\\demo\\eclipse-workspace\\Dependencies\\lib\\spring-web-4.3.2.RELEASE.jar=WEB-INF/lib/spring-web-4.3.2.RELEASE.jar
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\Mohit\\Documents\\GitHub\\Capgemini\\demo\\eclipse-workspace\\Dependencies\\lib\\spring-web-4.3.2.RELEASE-sources.jar=WEB-INF/lib/spring-web-4.3.2.RELEASE-sources.jar
+>>>>>>> dc9a99d96e1fe4e55a395868b0677114bc938d0f

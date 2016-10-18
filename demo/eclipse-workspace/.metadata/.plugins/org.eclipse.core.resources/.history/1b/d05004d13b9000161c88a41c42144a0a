@@ -1,0 +1,364 @@
+package com.flp.ems.dao;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import com.flp.ems.domain.Department;
+import com.flp.ems.domain.Employee;
+import com.flp.ems.domain.Project;
+import com.flp.ems.domain.Role;
+
+public class EmployeeDaoImplForDB implements IEmployeeDao {
+
+	private static EmployeeDaoImplForDB dao=null;
+	Properties prop;
+	Connection conn;
+	
+	private EmployeeDaoImplForDB()  {
+		dao=this; 
+		prop=new Properties();
+		try
+		{
+		prop.load(new FileInputStream("D:\\dbDetails.properties"));
+		Class.forName(prop.getProperty("jdbc.driver"));
+		String url=prop.getProperty("jdbc.url");
+		String uname=prop.getProperty("jdbc.username");
+		String pwd=prop.getProperty("jdbc.password");
+		conn=DriverManager.getConnection(url,uname,pwd);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+ }
+
+synchronized public static  EmployeeDaoImplForDB getDaoReference(){
+	 if(dao==null)
+		 return new EmployeeDaoImplForDB();
+	 else
+		 return dao;
+ }
+ 
+ 
+ 
+	@Override
+	public void AddEmployee(Employee emp) {
+		
+		String sql=prop.getProperty("jdbc.query.insertEmployee");
+		try(PreparedStatement ps=conn.prepareStatement(sql);){
+		
+			ps.setString(1, emp.getEmpId());
+			ps.setString(2, emp.getName());
+			ps.setString(3, emp.getKinId());
+			ps.setString(4, emp.getEmailId());
+			ps.setString(5, emp.getPhoneNo());
+			long p1=emp.getDob().getTime();
+			long p2=emp.getDoj().getTime();
+			ps.setDate(6,  new Date(p1));
+			ps.setDate(7, new Date(p2));
+			ps.setString(8, emp.getAddress());
+			ps.setString(9,emp.getDepid());
+			ps.setString(10, emp.getProjid());
+			ps.setString(11, emp.getRoleid());
+			
+			System.out.println("Rows affected "+ps.executeUpdate());
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public boolean ModifyEmployee(Employee emp) {
+		int result=0;
+		String empId=emp.getEmpId();
+		String sql=prop.getProperty("jdbc.query.modifyEmployee");
+		try(PreparedStatement ps=conn.prepareStatement(sql);){
+		ps.setString(1, empId);
+		result=ps.executeUpdate();
+		System.out.println("Rows affected "+result);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		AddEmployee(emp);	
+		return result==1;
+	}
+
+	@Override
+	public boolean RemoveEmployee(String key, String value) {
+		int result=0;
+		String sql=prop.getProperty("jdbc.query.removeEmployee");
+		//sql.indexOf('?')
+		try(PreparedStatement ps=conn.prepareStatement(sql);){
+				
+			
+				ps.setString(1, key);
+				ps.setString(2, value);
+				result=ps.executeUpdate();
+				//System.out.println(ps.toString());
+				System.out.println("Rows affected "+result);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	return result==1;	
+	}
+
+	@Override
+	public Employee SearchEmployee(HashMap<String, String> emp) {
+		Employee temp=null;
+		int result=0;
+		String sql="Select * from employee where ";
+		//sql.indexOf('?')
+		try(java.sql.Statement ps= conn.createStatement();){
+				
+			Set set=emp.entrySet();
+			int i=0;
+			for(Object o:set)
+			{
+				i++;
+				Map.Entry<String, String> m=(Map.Entry<String, String>)o;
+				if(i==set.size())
+					sql+=m.getKey()+"='"+m.getValue()+"'";
+				else	
+					sql+=m.getKey()+"='"+m.getValue()+"' or ";
+				
+			}
+			ResultSet rs = ps.executeQuery(sql);
+
+			if(rs.next()) 
+				temp=new Employee(rs.getString("empId"), rs.getString("name"), rs.getString("kinId"),rs.getString("emailId"),rs.getString("phone"),rs.getString("address"),rs.getDate("dob"),rs.getDate("doj"),rs.getString("deptId"),rs.getString("projId"),rs.getString("roleId"));
+			
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+	return temp;	
+
+	
+	}
+
+	@Override
+	public ArrayList<Employee> getAllEmployee() {
+	ArrayList<Employee> empList=new ArrayList<Employee>();
+
+	String selectSQL = prop.getProperty("jdbc.query.SAE");
+	
+	try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+		
+	ResultSet rs = preparedStatement.executeQuery();
+
+	while (rs.next()) 
+		empList.add(new Employee(rs.getString("empId"), rs.getString("name"), rs.getString("kinId"),rs.getString("emailId"),rs.getString("phone"),rs.getString("address"),rs.getDate("dob"),rs.getDate("doj"),rs.getString("deptId"),rs.getString("projId"),rs.getString("roleId")));
+	
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+		return empList;
+	}
+
+	public ArrayList<Department> getDepartmentList() {
+		ArrayList<Department> deptList=new ArrayList<Department>();
+		String selectSQL = prop.getProperty("jdbc.query.SAD");
+		
+		try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+		
+		ResultSet rs = preparedStatement.executeQuery();
+	
+		while (rs.next()) 
+			deptList.add(new Department(rs.getString("deptId"), rs.getString("name"), rs.getString("description")));
+		
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		return deptList;
+	}
+
+	public Department getDeptById(String deptid){
+		Department dept=null;
+		String selectSQL = prop.getProperty("jdbc.query.SD");
+		
+		try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+		preparedStatement.setString(1, deptid);
+			
+		ResultSet rs = preparedStatement.executeQuery( );
+	
+		if (rs.next()) 
+			dept=new Department(rs.getString("deptId"), rs.getString("name"), rs.getString("description"));
+		
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dept;
+		}
+	
+	public Role getRoleById(String roleId){
+		
+		Role role=null;
+		String selectSQL = prop.getProperty("jdbc.query.SR");
+		
+		try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+		preparedStatement.setString(1, roleId);
+			
+		ResultSet rs = preparedStatement.executeQuery( );
+	
+		if (rs.next()) 
+			role=new Role(rs.getString("roleId"), rs.getString("name"), rs.getString("description"));
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return role;
+
+	}
+		
+	public Project getProjectById(String projId){
+		Project proj=null;
+		String selectSQL = prop.getProperty("jdbc.query.SP");
+		
+		try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+		preparedStatement.setString(1, projId);
+			
+		ResultSet rs = preparedStatement.executeQuery();
+	
+		if (rs.next()) 
+		{	
+			proj=new Project(rs.getString("projId"), rs.getString("name"), rs.getString("description"),rs.getString("deptId"));
+		}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return proj;
+		}
+	
+	public ArrayList<Project> getProjectList(String deptid) {
+		ArrayList<Project> temp=new ArrayList<Project>();
+		String selectSQL = prop.getProperty("jdbc.query.SAP");
+		try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+		preparedStatement.setString(1, deptid);
+			
+		ResultSet rs = preparedStatement.executeQuery ();
+	
+		while (rs.next()) 
+		{	
+			temp.add(new Project(rs.getString("projId"), rs.getString("name"), rs.getString("description"),deptid));
+		
+		}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return temp;
+	}
+
+	public ArrayList<Role> getRoleList() {
+	
+		
+		ArrayList<Role> role=new ArrayList<Role>();
+		String selectSQL = prop.getProperty("jdbc.query.SAR");
+		
+		try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+			
+		ResultSet rs = preparedStatement.executeQuery( );
+	
+		while (rs.next()) 
+			role.add(new Role(rs.getString("roleId"), rs.getString("name"), rs.getString("description")));
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return role;	
+	}
+
+	public Employee getEmployeeByEmailId(String emailId) {
+		
+		Employee emp=null;
+		String selectSQL = prop.getProperty("jdbc.query.SE");
+		
+		try(PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);){
+		preparedStatement.setString(1, emailId);
+			
+		ResultSet rs = preparedStatement.executeQuery( );
+	
+		if (rs.next()) 
+			emp=new Employee(rs.getString("empId"), rs.getString("name"), rs.getString("kinId"),rs.getString("emailId"),rs.getString("phone"),rs.getString("address"),rs.getDate("dob"),rs.getDate("doj"),rs.getString("deptId"),rs.getString("projId"),rs.getString("roleId"));
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return emp;
+
+	
+	}
+
+	public boolean RemoveEmployeeByKinId(String value) {
+		int result=0;
+		String sql=prop.getProperty("jdbc.query.removeEmployeeKin");
+		//sql.indexOf('?')
+		try(PreparedStatement ps=conn.prepareStatement(sql);){
+				
+				ps.setString(1, value);
+				result=ps.executeUpdate();
+			//	System.out.println(ps.toString());
+				System.out.println("Rows affected "+result);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	return result==1;	
+	}
+
+	public boolean RemoveEmployeeByName(String value) {
+		int result=0;
+		String sql=prop.getProperty("jdbc.query.removeEmployeeName");
+		//sql.indexOf('?')
+		try(PreparedStatement ps=conn.prepareStatement(sql);){
+			
+				ps.setString(1, value);
+				result=ps.executeUpdate();
+				//System.out.println(ps.toString());
+				System.out.println("Rows affected "+result);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	return result==1;	
+	}
+
+	public boolean RemoveEmployeeByEmailId(String value) {
+		int result=0;
+		String sql=prop.getProperty("jdbc.query.removeEmployeeEmail");
+		//sql.indexOf('?')
+		try(PreparedStatement ps=conn.prepareStatement(sql);){
+				ps.setString(1, value);
+				result=ps.executeUpdate();
+			//	System.out.println(ps.toString());
+				System.out.println("Rows affected "+result);
+			} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	return result==1;	
+	}
+
+}
